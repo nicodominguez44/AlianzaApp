@@ -38,7 +38,7 @@ def main_login(page: ft.Page):
     pass_input = ft.TextField( hint_text='Contraseña',
         password=True, can_reveal_password=True,bgcolor=ft.Colors.WHITE, text_size=14,color=ft.Colors.BLACK,
                 border_radius=ft.border_radius.only(top_left=0,top_right=15,bottom_left=15,bottom_right=15),
-                border_color=ft.Colors.CYAN_ACCENT,)
+                border_color=ft.Colors.CYAN_ACCENT,keyboard_type=ft.KeyboardType.NUMBER)
     
     error_message = ft.Text("", color="red", size=14, text_align=ft.TextAlign.CENTER)
 
