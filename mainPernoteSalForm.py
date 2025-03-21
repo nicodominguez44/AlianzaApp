@@ -44,8 +44,23 @@ def validar_campos_sal(page):
     # Si todo está completo, retorna True
     return True
 
+# Crear ProgressRing
+progress_ring = ft.ProgressRing(color=ft.Colors.WHITE)
+
+# Crear AlertDialog con ProgressRing
+dialog_carga = ft.AlertDialog(
+    title=ft.Text("Registrando...",text_align=ft.TextAlign.CENTER,color=ft.Colors.WHITE),
+    content=ft.Column([progress_ring], horizontal_alignment=ft.CrossAxisAlignment.CENTER,alignment=ft.MainAxisAlignment.CENTER,height=100),
+    modal=True,bgcolor=ft.Colors.BLACK45
+)
+
 def registrar_salida(page):
     if validar_campos_sal(page):
+        # Mostrar el ProgressRing
+        page.add(dialog_carga)
+        dialog_carga.open = True
+        page.update()
+        
         # Obtener el ID del registro a eliminar
         id_registro = page.client_storage.get("id_registro_a_eliminar")
         print(f"ID del registro a eliminar: {id_registro}")  # Imprimir el ID
@@ -59,12 +74,23 @@ def registrar_salida(page):
             response = requests.delete(FLASK_URL_ELIMINAR_ENTRADA)
             response.raise_for_status()
             print("Salida registrada y entrada eliminada con éxito")
-            print(f"Respuesta del backend: {response.text}") # Imprimir la respuesta del backend
+            print(f"Respuesta del backend: {response.text}")
+
+            # Generar el registro
             generar_registro(page)
+
+            # Llamar a la siguiente pantalla después de completar la operación
             mainPernoteFinal.mainPernote_Final(page)
+
+            # Cerrar el ProgressRing (remover el AlertDialog)
+            dialog_carga.open = False
+            page.update()
             return True
         except requests.exceptions.RequestException as e:
             print(f"Error al eliminar la entrada: {e}")
+            # Cerrar el ProgressRing (remover el AlertDialog)
+            dialog_carga.open = False
+            page.update()
             return False
     else:
         return False
