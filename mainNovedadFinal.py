@@ -118,10 +118,11 @@ def mainNovedad_Final(page: ft.Page):
         content=(ft.Column([
             ft.Row([pernocte_columna], alignment=ft.MainAxisAlignment.CENTER),
 
-            ft.Row([ft.Text(globals.selected_date_nov,
-                            text_align=ft.TextAlign.CENTER,color= ft.Colors.CYAN_ACCENT),
-                    ft.Text("FECHA",text_align=ft.TextAlign.CENTER,
+            ft.Row([
+                ft.Text("FECHA",text_align=ft.TextAlign.CENTER,
                             color= ft.Colors.WHITE, style=ft.TextStyle(size=10,weight=ft.FontWeight.BOLD)),
+                ft.Text(globals.selected_date_nov,
+                            text_align=ft.TextAlign.CENTER,color= ft.Colors.CYAN_ACCENT),
                     ],
                     alignment=ft.MainAxisAlignment.CENTER),
             
