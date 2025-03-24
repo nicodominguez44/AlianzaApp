@@ -3,6 +3,8 @@ import mainNovedad
 import mainlogin
 from accionBotonPern import boton_pernocte_f
 import os
+import requests
+import asyncio
 
 ARCHIVO_SESION = "sesion.txt"
 
@@ -10,6 +12,51 @@ def cerrar_sesion(page):
     if os.path.exists(ARCHIVO_SESION):
         os.remove(ARCHIVO_SESION)
     mainlogin.main_login(page)
+
+#FUNCION PARA OBTENER URL DE BOTON "NOTICIAS"
+async def obtener_url_noticias(page):
+    try:
+        page.splash = ft.ProgressBar() #Muestra el indicador de carga
+        page.update()
+        response = requests.get("http://nicolasdominguez.pythonanywhere.com/obtener_url_noticias")
+        response.raise_for_status()
+        data = response.json()
+        page.splash = None #Oculta el indicador de carga
+        page.update()
+        return data["url"]
+    except requests.exceptions.RequestException as e:
+        print(f"Error al obtener la URL de noticias: {e}")
+        page.splash = None #Oculta el indicador de carga
+        page.update()
+        return None
+
+async def on_click_noticias(page):
+    url = await obtener_url_noticias(page)
+    if url:
+        await page.launch_url(url)
+
+
+#FUNCION PARA OBTENER URL DE BOTON "INFORMACION UTIL"
+async def obtener_url_informacion_util(page):
+    try:
+        page.splash = ft.ProgressBar() #Muestra el indicador de carga
+        page.update()
+        response = requests.get("http://nicolasdominguez.pythonanywhere.com/obtener_url_informacion_util")
+        response.raise_for_status()
+        data = response.json()
+        page.splash = None #Oculta el indicador de carga
+        page.update()
+        return data["url"]
+    except requests.exceptions.RequestException as e:
+        print(f"Error al obtener la URL de informacion util: {e}")
+        page.splash = None #Oculta el indicador de carga
+        page.update()
+        return None
+
+async def on_click_informacion_util(page):
+    url = await obtener_url_informacion_util(page)
+    if url:
+        await page.launch_url(url)
 
 
 def main_Inicio(page: ft.Page, username: str, user_info: dict):
@@ -83,8 +130,6 @@ def main_Inicio(page: ft.Page, username: str, user_info: dict):
         ]
     )
 
-    def on_click_noticias(e):
-        page.launch_url("")
 
     row3= ft.Row(
         [
@@ -94,7 +139,7 @@ def main_Inicio(page: ft.Page, username: str, user_info: dict):
                 text_style=ft.TextStyle(size=20,weight=ft.FontWeight.BOLD,color=ft.Colors.BLUE_900)
             ),
             expand=True,height=70,bgcolor=ft.Colors.WHITE,color=ft.Colors.BLUE_900,
-            on_click= "")
+            on_click= lambda _: asyncio.run(on_click_noticias(page)))
         ]
     ) 
 
@@ -106,7 +151,7 @@ def main_Inicio(page: ft.Page, username: str, user_info: dict):
                 text_style=ft.TextStyle(size=20,weight=ft.FontWeight.BOLD,color=ft.Colors.BLUE_900)
             ),
             expand=True, height=70, bgcolor=ft.Colors.WHITE,color=ft.Colors.BLUE_900,
-            on_click= "")
+            on_click= lambda _: asyncio.run(on_click_informacion_util(page)))
         ]
     )
 
