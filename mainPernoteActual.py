@@ -33,9 +33,11 @@ def mainPernote_Actual(page: ft.Page):
                 response = requests.delete(FLASK_URL_ELIMINAR_TODAS, json={'password': password})
                 response.raise_for_status()
                 print("Todas las entradas han sido eliminadas")
-                mainPernote_Actual(page)  # Recargar la página
+                
                 password_dialog.open = False
                 page.update()
+                mainPernote_Actual(page)  # Recargar la página
+
             except requests.exceptions.RequestException as e:
                 print(f"Error al eliminar todas las entradas: {e}")
                 password_error.value = "Contraseña incorrecta"
@@ -58,6 +60,7 @@ def mainPernote_Actual(page: ft.Page):
         page.add(password_dialog)
         password_dialog.open = True
         page.update()
+       
 
 
     app_bar = ft.AppBar(
@@ -98,7 +101,7 @@ def mainPernote_Actual(page: ft.Page):
     for lugar, registros in entradas.items():
         if lugar in secciones:
             for registro in registros:
-                detalles = f"{registro['legajo']}/{registro['nombre']}: {registro['fecha_entrada']}, {registro['hora_entrada']} - {registro['tren_remis']}"
+                detalles = f"{registro['legajo']}/{registro['nombre']}: {registro['fecha_entrada']}, {registro['hora_entrada']} - {registro['tren_remis_entrada']}{registro['observaciones_entrada']}"
                 page.client_storage.set("id_registro_a_eliminar", registro['id'])
                 print(f"ID almacenado: {page.client_storage.get('id_registro_a_eliminar')}")
                 
