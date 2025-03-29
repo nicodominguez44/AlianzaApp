@@ -22,7 +22,7 @@ def mainPernote_Sal(page: ft.Page):
     page.window.width=360
     page.window.height=720
     page.horizontal_alignment=ft.CrossAxisAlignment.CENTER
-    page.padding= ft.padding.only(left=25, top=0, right=25, bottom=0)
+    page.padding= ft.padding.only(left=25, top=10, right=25, bottom=0)
 
     mainPernoteEntForm.cargar_datos_entrada()
 
