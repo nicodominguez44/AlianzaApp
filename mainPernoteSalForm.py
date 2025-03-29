@@ -5,7 +5,9 @@ import accionBotonPern
 import mainPernoteSal
 import mainPernoteFinal
 import globals
+import os
 import requests
+import asyncio
 
 
 
@@ -44,27 +46,27 @@ def validar_campos_sal(page):
     # Si todo está completo, retorna True
     return True
 
-# Crear ProgressRing
+# Crea el ProgressRing
 progress_ring = ft.ProgressRing(color=ft.Colors.WHITE)
 
-# Crear AlertDialog con ProgressRing
+# Crea el AlertDialog con el ProgressRing
 dialog_carga = ft.AlertDialog(
     title=ft.Text("Registrando...",text_align=ft.TextAlign.CENTER,color=ft.Colors.WHITE),
     content=ft.Column([progress_ring], horizontal_alignment=ft.CrossAxisAlignment.CENTER,alignment=ft.MainAxisAlignment.CENTER,height=100),
     modal=True,bgcolor=ft.Colors.BLACK45
 )
 
-def registrar_salida(page):
+async def registrar_salida(page):
+    
     if validar_campos_sal(page):
         # Mostrar el ProgressRing
         page.add(dialog_carga)
         dialog_carga.open = True
         page.update()
-        
+
         # Obtener el ID del registro a eliminar
         id_registro = page.client_storage.get("id_registro_a_eliminar")
         print(f"ID del registro a eliminar: {id_registro}")  # Imprimir el ID
-        
 
         # Enviar la solicitud DELETE al backend
         FLASK_URL_ELIMINAR_ENTRADA = f"https://nicolasdominguez.pythonanywhere.com/eliminar_entrada/{id_registro}"
@@ -77,41 +79,45 @@ def registrar_salida(page):
             print(f"Respuesta del backend: {response.text}")
 
             # Generar el registro
-            generar_registro(page)
+            await generar_registro(page)
 
-            # Llamar a la siguiente pantalla después de completar la operación
-            mainPernoteFinal.mainPernote_Final(page)
+            #limpia los registros globales
+            limpiar_registro()
 
             # Cerrar el ProgressRing (remover el AlertDialog)
             dialog_carga.open = False
             page.update()
+
+            # Llamar a la siguiente pantalla después de completar la operación
+            mainPernoteFinal.mainPernote_Final(page)
             return True
         except requests.exceptions.RequestException as e:
             print(f"Error al eliminar la entrada: {e}")
+
             # Cerrar el ProgressRing (remover el AlertDialog)
             dialog_carga.open = False
             page.update()
             return False
+        
     else:
         return False
 
 
-
-
-#Función para generar y guardar el registro en l backend
-def generar_registro(page):
+#Función para generar y guardar el registro en el backend
+async def generar_registro(page):
     username = page.client_storage.get("username")
     registro = {
-        "nombre": globals.writed_name,
-        "legajo": globals.writed_legajo,
-        "pernocte": globals.selected_option_pernocte,
+        "username": page.client_storage.get("username"),
+        "nombre": page.client_storage.get("user_info")["nombre"],
+        "legajo": page.client_storage.get("user_info")["legajo"],
+        "lugar_pernocte": globals.selected_option_pernocte,
         "fecha_entrada": globals.selected_date_ent,
         "hora_entrada": globals.selected_time_ent,
-        "tren_entrada": globals.writed_train_ent,
+        "tren_remis_entrada": globals.writed_train_ent,
         "observaciones_entrada": globals.writed_obs_ent,
         "fecha_salida": globals.selected_date_sal,
         "hora_salida": globals.selected_time_sal,
-        "tren_salida": globals.writed_train_sal,
+        "tren_remis_salida": globals.writed_train_sal,
         "observaciones_salida": globals.writed_obs_sal,
     }
     
@@ -133,6 +139,26 @@ def generar_registro(page):
     except requests.exceptions.RequestException as e:
         print(f"Error al generar el registro general: {e}")
 
+ARCHIVO_DATOS_ENTRADA = "datos_entrada.json"
+
+def limpiar_registro():
+    #limpiar las variables globales
+    print("registros pernocte limpiados con exito")
+    globals.writed_name = ""
+    globals.writed_legajo = ""
+    globals.selected_option_pernocte= "Sin seleccionar"
+    globals.selected_date_ent= "Sin seleccionar"
+    globals.selected_time_ent= "Sin seleccionar"
+    globals.writed_train_ent= ""
+    globals.writed_obs_ent= ""
+    globals.selected_date_sal= "Sin seleccionar"
+    globals.selected_time_sal= "Sin seleccionar"
+    globals.writed_train_sal= ""
+    globals.writed_obs_sal= ""
+
+    if os.path.exists(ARCHIVO_DATOS_ENTRADA):
+        os.remove(ARCHIVO_DATOS_ENTRADA)
+
 
 
 
@@ -153,7 +179,7 @@ def mainPernote_SalForm(page: ft.Page):
     page.window.width=360
     page.window.height=720
     page.horizontal_alignment=ft.CrossAxisAlignment.CENTER
-    page.padding= ft.padding.only(left=0, top=10, right=0, bottom=10)
+    page.padding= ft.padding.only(left=0, top=10, right=0, bottom=0)
 
     
 
@@ -304,7 +330,10 @@ def mainPernote_SalForm(page: ft.Page):
 
     cambiar_f1= accionBotonPern.obtener_cambiar_f1()
 
-    
+    async def async_registrar_salida_y_cambiar_f1(e, page):
+        if await registrar_salida(page):
+            cambiar_f1(e)
+
 
     container= ft.Container(
         bgcolor=ft.Colors.BLUE_700,
@@ -323,7 +352,7 @@ def mainPernote_SalForm(page: ft.Page):
                                       style= ft.ButtonStyle(
                                           text_style=ft.TextStyle(size=20,weight=ft.FontWeight.BOLD),color=ft.Colors.WHITE),
                                      expand=True,height=60,bgcolor=ft.Colors.GREEN_ACCENT_400, color= ft.Colors.WHITE,
-                                     on_click=lambda e: (cambiar_f1(e) if registrar_salida(page) else None))
+                                     on_click=lambda e: asyncio.run(async_registrar_salida_y_cambiar_f1(e, page)) if validar_campos_sal(page) else None)
                     ]) 
             ], spacing=15
         )
