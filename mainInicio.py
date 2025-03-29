@@ -13,6 +13,7 @@ def cerrar_sesion(page):
         os.remove(ARCHIVO_SESION)
     mainlogin.main_login(page)
 
+
 #FUNCION PARA OBTENER URL DE BOTON "NOTICIAS"
 async def obtener_url_noticias(page):
     try:
@@ -61,7 +62,7 @@ async def on_click_informacion_util(page):
 
 def main_Inicio(page: ft.Page, username: str, user_info: dict):
     page.clean()
-    page.title= "Menu Inicio 1"
+    page.title= "Menu Inicio"
 
     page.decoration = ft.BoxDecoration(
         gradient= ft.LinearGradient(
@@ -103,7 +104,6 @@ def main_Inicio(page: ft.Page, username: str, user_info: dict):
 
     logo = ft.Image(src= 'assets/logoFrateAlianza1.png',width=70,)
     titulo= ft.Text("Menu Inicio", color= ft.Colors.WHITE, style=ft.TextStyle(size=20,weight=ft.FontWeight.BOLD))
-
 
 
     row1= ft.Row(
@@ -151,7 +151,7 @@ def main_Inicio(page: ft.Page, username: str, user_info: dict):
                 text_style=ft.TextStyle(size=20,weight=ft.FontWeight.BOLD,color=ft.Colors.BLUE_900)
             ),
             expand=True, height=70, bgcolor=ft.Colors.WHITE,color=ft.Colors.BLUE_900,
-            on_click= lambda _: asyncio.run(on_click_informacion_util(page)))
+            on_click=  lambda _: asyncio.run(on_click_informacion_util(page)))
         ]
     )
 
