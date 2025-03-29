@@ -101,12 +101,12 @@ def mainPernote_Actual(page: ft.Page):
     for lugar, registros in entradas.items():
         if lugar in secciones:
             for registro in registros:
-                detalles = f"{registro['legajo']}/{registro['nombre']}: {registro['fecha_entrada']}, {registro['hora_entrada']} - {registro['tren_remis_entrada']}{registro['observaciones_entrada']}"
+                detalles = f"{registro['nombre']}: {registro['fecha_entrada']}, {registro['hora_entrada']} - {registro['tren_remis_entrada']}"
                 page.client_storage.set("id_registro_a_eliminar", registro['id'])
                 print(f"ID almacenado: {page.client_storage.get('id_registro_a_eliminar')}")
                 
                 secciones[lugar].content.controls.append(
-                    ft.Text(detalles, size=14, color=ft.Colors.WHITE, text_align=ft.TextAlign.CENTER)
+                    ft.Text(detalles, size=12, color=ft.Colors.WHITE, text_align=ft.TextAlign.CENTER)
                 )
                 secciones[lugar].content.controls.append(ft.Divider(color=ft.Colors.WHITE24))
 
