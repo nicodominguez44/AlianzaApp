@@ -97,14 +97,14 @@ def mainPernote_Historial(page: ft.Page):
 
     # Obtener los registros desde el backend
     username = page.client_storage.get("username")
-    FLASK_URL = f"https://nicolasdominguez.pythonanywhere.com/historial/{username}"  # URL del backend
+    FLASK_URL = f"https://nicolasdominguez.pythonanywhere.com/historial/{username}"
     try:
         response = requests.get(FLASK_URL)
-        response.raise_for_status()  # Lanza una excepción para códigos de error HTTP
+        response.raise_for_status()
         registros = response.json()
     except requests.exceptions.RequestException as e:
         print(f"Error al obtener el historial: {e}")
-        registros = []  # Inicializar registros como lista vacía en caso de error
+        registros = []
 
     registros.reverse()
 
@@ -113,12 +113,12 @@ def mainPernote_Historial(page: ft.Page):
     for registro in registros:
         row = ft.Row(
             [
-                ft.Column([ft.Text(f"{registro['pernocte']} - {registro['fecha_entrada']}", color=ft.Colors.CYAN_ACCENT, style=ft.TextStyle(weight=ft.FontWeight.BOLD),expand=True),
+                ft.Column([ft.Text(f"{registro['fecha_entrada']} - {registro['lugar_pernocte']}", color=ft.Colors.CYAN_ACCENT, style=ft.TextStyle(weight=ft.FontWeight.BOLD),expand=True),
                            ft.Text(f"Entrada: {registro['fecha_entrada']} - {registro['hora_entrada']}", color=ft.Colors.WHITE,style=ft.TextStyle(size=12),expand=True),
                            ft.Text(f"Salida: {registro['fecha_salida']} - {registro['hora_salida']}", color=ft.Colors.WHITE,style=ft.TextStyle(size=12),expand=True),
-                           ft.Text(f"Tren llegada: {registro['tren_entrada']} - Tren salida: {registro['tren_salida']}", color=ft.Colors.WHITE,style=ft.TextStyle(size=12),expand=True),
-                           ft.Text(f"Obs. llegada: {registro['observaciones_entrada']}", color=ft.Colors.WHITE,style=ft.TextStyle(size=12),expand=True),
-                           ft.Text(f"Obs. salida: {registro['observaciones_salida']}", color=ft.Colors.WHITE,style=ft.TextStyle(size=12),expand=True)
+                           ft.Text(f"Tren llegada: {registro['tren_remis_entrada']} - Tren salida: {registro['tren_remis_salida']}", color=ft.Colors.WHITE, style=ft.TextStyle(size=12), expand=True),
+                        ft.Text(f"Obs. llegada: {registro['observaciones_entrada']}", color=ft.Colors.WHITE, style=ft.TextStyle(size=12), expand=True),
+                        ft.Text(f"Obs. salida: {registro['observaciones_salida']}", color=ft.Colors.WHITE, style=ft.TextStyle(size=12), expand=True),
                        ],spacing=5,expand=True),
             ],
             alignment=ft.MainAxisAlignment.START,expand=True
@@ -131,7 +131,7 @@ def mainPernote_Historial(page: ft.Page):
             padding=ft.padding.all(10),
             margin=ft.margin.only(bottom=10),
             border_radius=ft.border_radius.all(8),
-            bgcolor=ft.Colors.BLUE_900,
+            bgcolor='#000740',
             
         )
 
