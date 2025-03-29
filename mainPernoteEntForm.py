@@ -12,6 +12,7 @@ import requests
 ARCHIVO_DATOS_ENTRADA = "datos_entrada.json"
 
 def guardar_datos_entrada():
+    print("Guardando datos de entrada...")
     datos = {
         "selected_option_pernocte": globals.selected_option_pernocte,
         "selected_date_ent": globals.selected_date_ent,
@@ -101,8 +102,8 @@ def registrar_entrada(page):
         lugar_pernocte = globals.selected_option_pernocte
         fecha_entrada = globals.selected_date_ent
         hora_entrada = globals.selected_time_ent
-        tren_remis = globals.writed_train_ent
-        observaciones = globals.writed_obs_ent
+        tren_remis_entrada = globals.writed_train_ent
+        observaciones_entrada = globals.writed_obs_ent
 
         # Crear el diccionario con los datos
         datos_entrada = {
@@ -112,8 +113,8 @@ def registrar_entrada(page):
             "lugar_pernocte": lugar_pernocte,
             "fecha_entrada": fecha_entrada,
             "hora_entrada": hora_entrada,
-            "tren_remis": tren_remis,
-            "observaciones": observaciones,
+            "tren_remis_entrada": tren_remis_entrada,
+            "observaciones_entrada": observaciones_entrada,
         }
 
         # Enviar la solicitud POST al backend
