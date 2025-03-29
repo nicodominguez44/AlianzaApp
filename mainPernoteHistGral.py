@@ -1,6 +1,7 @@
 import flet as ft
 import mainInicio
 import requests
+import asyncio
 
 def mainPernote_Historial_General(page: ft.Page):
     page.clean()
@@ -25,7 +26,7 @@ def mainPernote_Historial_General(page: ft.Page):
     app_bar = ft.AppBar(
         bgcolor= ft.Colors.TRANSPARENT,
         actions=[ft.PopupMenuButton(
-            items=[ft.PopupMenuItem(text= "Vaciar",icon=ft.Icons.DELETE,on_click=lambda e: vaciar_historial_general_pernote())])],
+            items=[ft.PopupMenuItem(text= "Vaciar",icon=ft.Icons.DELETE,on_click=lambda e: asyncio.run(vaciar_historial_general_pernote(page)))])],
         leading=ft.IconButton(icon=ft.Icons.ARROW_CIRCLE_LEFT_SHARP,icon_size=40,icon_color=ft.Colors.BLUE_900,
                               on_click=lambda e: mainInicio.main_Inicio(page,page.client_storage.get("username"),
                                                                         page.client_storage.get("user_info"))),
@@ -35,15 +36,14 @@ def mainPernote_Historial_General(page: ft.Page):
     page.add(app_bar)
 
     # FUNCION PARA VACIAR EL HISTORIAL GENERAL
-    def vaciar_historial_general_pernote():
-
+    async def vaciar_historial_general_pernote(page): #Agregamos page como argumento
         def close_dlg(e):
             password_dialog_gral.open = False
             page.update()
 
-        def check_password(e):
+        async def check_password(e): #Hacemos check_password asincrona
             password = password_field.value
-            FLASK_URL_VACIAR_GENERAL = "https://nicolasdominguez.pythonanywhere.com/vaciar_historial_general"
+            FLASK_URL_VACIAR_GENERAL = "http://nicolasdominguez.pythonanywhere.com/vaciar_historial_general"
             try:
                 response = requests.delete(FLASK_URL_VACIAR_GENERAL, json={'password': password})
                 response.raise_for_status()
@@ -63,32 +63,35 @@ def mainPernote_Historial_General(page: ft.Page):
 
         password_dialog_gral = ft.AlertDialog(
             modal=True,
-            title=ft.Text("Ingrese la contraseña admin",text_align=ft.TextAlign.CENTER),
-            content=ft.Column([password_field, password_error],alignment=ft.MainAxisAlignment.CENTER,height=80),
+            title=ft.Text("Ingrese la contraseña admin", text_align=ft.TextAlign.CENTER),
+            content=ft.Column([password_field, password_error], alignment=ft.MainAxisAlignment.CENTER, height=80),
             actions=[
-                ft.ElevatedButton("Aceptar", on_click=check_password),
+                ft.ElevatedButton("Aceptar", on_click=lambda e: asyncio.run(check_password(e))), #Hacemos check_password asincrona
                 ft.ElevatedButton("Cancelar", on_click=close_dlg),
             ],
             actions_alignment=ft.MainAxisAlignment.CENTER,
             on_dismiss=lambda e: print("Dialog dismissed!"),
         )
-        page.add (password_dialog_gral)
+        page.add(password_dialog_gral)
         password_dialog_gral.open = True
         page.update()
 
 
     # OBTENER HISTORIAL GENERAL DE REGISTROS DESDE EL BACKEND
-    FLASK_URL_GENERAL = "https://nicolasdominguez.pythonanywhere.com/historial_general_pernocte"
-    try:
-        username = page.client_storage.get("username")
-        headers = {'X-Username': username}
-        response = requests.get(FLASK_URL_GENERAL, headers=headers)
-        response.raise_for_status()
-        registros = response.json()
-    except requests.exceptions.RequestException as e:
-        print(f"Error al obtener el historial general: {e}")
-        registros = []
+    async def obtener_registros_general(page): #Hacemos obtener_registros asincrona
+        FLASK_URL_GENERAL = "https://nicolasdominguez.pythonanywhere.com/historial_general_pernocte"
+        try:
+            username = page.client_storage.get("username")
+            headers = {'X-Username': username}
+            response = requests.get(FLASK_URL_GENERAL, headers=headers)
+            response.raise_for_status()
+            registros = response.json()
+            return registros
+        except requests.exceptions.RequestException as e:
+            print(f"Error al obtener el historial general: {e}")
+            return []
 
+    registros = asyncio.run(obtener_registros_general(page)) #Llamamos a obtener_registros de forma asincrona
     registros.reverse()
 
 
@@ -97,11 +100,11 @@ def mainPernote_Historial_General(page: ft.Page):
     for registro in registros:
         row = ft.Row(
             [
-                ft.Column([ft.Text(f"{registro['pernocte']} - {registro['fecha_entrada']}", color=ft.Colors.CYAN_ACCENT, style=ft.TextStyle(weight=ft.FontWeight.BOLD),expand=True),
+                ft.Column([ft.Text(f"{registro['fecha_entrada']} - {registro['lugar_pernocte']}", color=ft.Colors.CYAN_ACCENT, style=ft.TextStyle(weight=ft.FontWeight.BOLD),expand=True),
                            ft.Text(f"Nombre y Legajo: {registro['nombre']} - {registro['legajo']}", color=ft.Colors.WHITE,style=ft.TextStyle(size=11),expand=True),
                            ft.Text(f"Entrada: {registro['fecha_entrada']} - {registro['hora_entrada']}", color=ft.Colors.WHITE,style=ft.TextStyle(size=11),expand=True),
                            ft.Text(f"Salida: {registro['fecha_salida']} - {registro['hora_salida']}", color=ft.Colors.WHITE,style=ft.TextStyle(size=11),expand=True),
-                           ft.Text(f"Tren llegada: {registro['tren_entrada']} - Tren salida: {registro['tren_salida']}", color=ft.Colors.WHITE,style=ft.TextStyle(size=11),expand=True),
+                           ft.Text(f"Tren llegada: {registro['tren_remis_entrada']} - Tren salida: {registro['tren_remis_salida']}", color=ft.Colors.WHITE,style=ft.TextStyle(size=11),expand=True),
                            ft.Text(f"Obs. llegada: {registro['observaciones_entrada']}", color=ft.Colors.WHITE,style=ft.TextStyle(size=11),expand=True),
                            ft.Text(f"Obs. salida: {registro['observaciones_salida']}", color=ft.Colors.WHITE,style=ft.TextStyle(size=11),expand=True)
                        ],spacing=4,expand=True),
@@ -116,7 +119,7 @@ def mainPernote_Historial_General(page: ft.Page):
             padding=ft.padding.all(10),
             margin=ft.margin.only(bottom=10),
             border_radius=ft.border_radius.all(8),
-            bgcolor=ft.Colors.BLUE_900,
+            bgcolor='#000740',
             
         )
 
