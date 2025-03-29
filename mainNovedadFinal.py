@@ -74,7 +74,7 @@ def mainNovedad_Final(page: ft.Page):
     page.window.width=360
     page.window.height=720
     page.horizontal_alignment=ft.CrossAxisAlignment.CENTER
-    page.padding= ft.padding.only(left=30, top=25, right=30, bottom=30)
+    page.padding= ft.padding.only(left=30, top=30, right=30, bottom=30)
 
 
     logo = ft.Image(src= 'logoFrateAlianza1.png',width=70,)
