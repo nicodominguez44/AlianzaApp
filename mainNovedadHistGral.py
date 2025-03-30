@@ -8,7 +8,7 @@ def mainNovedad_Historial_General(page: ft.Page):
 
     page.decoration = ft.BoxDecoration(
         gradient= ft.LinearGradient(
-            colors=['#0542fa', '#000740'],
+            colors=[ft.Colors.BLUE_600, ft.Colors.INDIGO_900],
             stops=[0,1],
             begin=ft.alignment.top_center,
             end=ft.alignment.bottom_center,
