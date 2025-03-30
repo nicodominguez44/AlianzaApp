@@ -353,7 +353,7 @@ def mainPernote_SalForm(page: ft.Page):
             ft.Row([ft.ElevatedButton(text="Ver Resumen",
                                       style= ft.ButtonStyle(
                                           text_style=ft.TextStyle(size=20,weight=ft.FontWeight.BOLD),color=ft.Colors.WHITE),
-                                     expand=True,height=50,bgcolor=ft.Colors.BLUE_ACCENT, color= ft.Colors.WHITE,
+                                     expand=True,height=50,bgcolor=ft.Colors.BLUE_900, color= ft.Colors.WHITE,
                                      on_click=lambda e: asyncio.run(async_cambiar_pagina_final(e)) if validar_campos_sal(page) else None)
                     ]) 
             ], spacing=15
