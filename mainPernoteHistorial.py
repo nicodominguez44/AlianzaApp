@@ -10,7 +10,7 @@ def mainPernote_Historial(page: ft.Page):
 
     page.decoration = ft.BoxDecoration(
         gradient= ft.LinearGradient(
-            colors=[ft.Colors.BLUE_600, ft.Colors.INDIGO_900],
+            colors=['#0542fa', '#000740'],
             stops=[0,1],
             begin=ft.alignment.top_center,
             end=ft.alignment.bottom_center,
