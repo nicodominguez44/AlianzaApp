@@ -83,13 +83,12 @@ async def registrar_salida(page):
 
             #limpia los registros globales
             limpiar_registro()
-
+            # Llamar a la siguiente pantalla después de completar la operación
+            await mainPernoteFinal.mainPernote_Final_Inicio(page)
             # Cerrar el ProgressRing (remover el AlertDialog)
             dialog_carga.open = False
             page.update()
-
-            # Llamar a la siguiente pantalla después de completar la operación
-            await mainPernoteFinal.mainPernote_Final_Inicio(page)
+            
             return True
         except requests.exceptions.RequestException as e:
             print(f"Error al eliminar la entrada: {e}")
