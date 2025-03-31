@@ -119,8 +119,7 @@ def mainPernote_Historial_General(page: ft.Page):
             padding=ft.padding.all(10),
             margin=ft.margin.only(bottom=10),
             border_radius=ft.border_radius.all(8),
-            bgcolor='#000740',
-            
+            bgcolor=ft.Colors.BLUE_900
         )
 
         rows.append(container_registro_general)
