@@ -12,7 +12,7 @@ import asyncio
 
 ARCHIVO_DATOS_ENTRADA = "datos_entrada.json"
 
-def guardar_datos_entrada():
+async def guardar_datos_entrada():
     print("Guardando datos de entrada...")
     datos = {
         "selected_option_pernocte": globals.selected_option_pernocte,
@@ -92,9 +92,23 @@ def validar_campos_ent(page):
     # Si todo está completo, retorna True
     return True
 
+# Crea el ProgressRing
+progress_ring = ft.ProgressRing(color=ft.Colors.WHITE)
 
-def registrar_entrada(page):
+# Crea el AlertDialog con el ProgressRing
+dialog_carga = ft.AlertDialog(
+    title=ft.Text("Registrando...",text_align=ft.TextAlign.CENTER,color=ft.Colors.WHITE),
+    content=ft.Column([progress_ring], horizontal_alignment=ft.CrossAxisAlignment.CENTER,alignment=ft.MainAxisAlignment.CENTER,height=100),
+    modal=True,bgcolor=ft.Colors.BLACK45
+)
+
+
+async def registrar_entrada(page):
     if validar_campos_ent(page):  # Si todo está bien
+
+        page.add(dialog_carga)
+        dialog_carga.open = True
+        page.update()
 
         # Obtener los datos del formulario
         username = page.client_storage.get("username")
@@ -124,12 +138,20 @@ def registrar_entrada(page):
             response = requests.post(FLASK_URL_REGISTRAR_ENTRADA, json=datos_entrada)
             response.raise_for_status()
             print("Entrada registrada con éxito")
-            mainPernoteSal.mainPernote_Sal(page)  # Navegar a la página de salida
-            guardar_datos_entrada()
+            await guardar_datos_entrada()
+            mainPernoteSal.mainPernote_Sal(page)
+            
+            dialog_carga.open = False
+            page.update()
+
             return True
         except requests.exceptions.RequestException as e:
             print(f"Error al registrar la entrada: {e}")
+
+            dialog_carga.open = False
+            page.update()
             return False
+
     else:
         return False
 
@@ -487,6 +509,10 @@ def mainPernote_EntFinal(page: ft.Page):
 
     cambiar_f2= accionBotonPern.obtener_cambiar_f2()
 
+    async def async_registrar_entrada_cambiar_f2(e, page):
+        if await registrar_entrada(page):
+            cambiar_f2(e)
+
     row7= ft.Row(
         [
             ft.ElevatedButton(
@@ -494,7 +520,7 @@ def mainPernote_EntFinal(page: ft.Page):
             style= ft.ButtonStyle(
                 text_style=ft.TextStyle(size=20,weight=ft.FontWeight.BOLD)),
             expand=True,height=60,bgcolor=ft.Colors.GREEN_ACCENT_400, color=ft.Colors.WHITE,
-            on_click=lambda e: (cambiar_f2(e) if registrar_entrada(page) else None))
+            on_click=lambda e: asyncio.run(async_registrar_entrada_cambiar_f2(e, page) if validar_campos_ent(page) else None))
         ]
     )
 
