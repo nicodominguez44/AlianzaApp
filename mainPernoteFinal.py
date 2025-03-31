@@ -30,9 +30,12 @@ async def mainPernote_Final_Inicio(page: ft.Page):
        #MENSAJE DE EXITO
 
     registro_entrada_salida= ft.Text("Tu entrada y salida se registraron correctamente",
-                                      color= ft.Colors.CYAN_ACCENT, style=ft.TextStyle(size=24,weight=ft.FontWeight.W_300),
+                                      color= ft.Colors.GREEN_ACCENT_400, style=ft.TextStyle(size=22,weight=ft.FontWeight.W_400),
                                       expand=True, text_align=ft.TextAlign.CENTER,)
-    row_registro_entr_sal= ft.Row([registro_entrada_salida])
+    Icon_check= ft.Icon(name=ft.Icons.CHECK_CIRCLE_ROUNDED,color=ft.Colors.GREEN_ACCENT_400,size=30)
+
+    column_registro_entr_sal= ft.Column([Icon_check,registro_entrada_salida],
+                                        alignment=ft.MainAxisAlignment.CENTER,horizontal_alignment=ft.CrossAxisAlignment.CENTER)
 
 
     columna1= ft.Column(
@@ -43,7 +46,7 @@ async def mainPernote_Final_Inicio(page: ft.Page):
     )
 
     columna2= ft.Column(
-        controls=[row_registro_entr_sal],
+        controls=[column_registro_entr_sal],
         alignment=ft.MainAxisAlignment.CENTER,
         horizontal_alignment=ft.CrossAxisAlignment.CENTER,
         spacing=20
