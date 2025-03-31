@@ -40,8 +40,10 @@ def mainPernote_Sal(page: ft.Page):
     titulo= ft.Text("Pernoctes", color= ft.Colors.WHITE, style=ft.TextStyle(size=20,weight=ft.FontWeight.BOLD))
 
 
-    registroentrada= ft.Text("Entrada Registrada!", color= ft.Colors.CYAN_ACCENT, 
-                             style=ft.TextStyle(size=24,weight=ft.FontWeight.W_300))
+    registroentrada= ft.Row([ft.Text("Entrada Registrada", color= ft.Colors.GREEN_ACCENT_400,
+                                style=ft.TextStyle(size=22,weight=ft.FontWeight.W_500)),
+                             ft.Icon(name=ft.Icons.CHECK_CIRCLE_ROUNDED,color=ft.Colors.GREEN_ACCENT_400,size=27)
+                             ],alignment=ft.MainAxisAlignment.CENTER)
     
     # PERNOCTE TOMADO DE ENTRADA
 
@@ -103,7 +105,7 @@ def mainPernote_Sal(page: ft.Page):
             style= ft.ButtonStyle(
                 text_style=ft.TextStyle(size=20,weight=ft.FontWeight.BOLD)
             ),
-            expand=True,height=70,bgcolor=ft.Colors.WHITE, color=ft.Colors.BLUE_900,
+            expand=True,height=60,bgcolor=ft.Colors.WHITE, color=ft.Colors.BLUE_900,
             on_click=lambda e: mainPernoteSalForm.mainPernote_SalForm(page))
         ]
     )
@@ -116,7 +118,7 @@ def mainPernote_Sal(page: ft.Page):
                 text_style=ft.TextStyle(size=20,weight=ft.FontWeight.BOLD,color=ft.Colors.BLACK)
             ),
             expand=True,
-            height=70, bgcolor=ft.Colors.WHITE, color=ft.Colors.BLUE_900,
+            height=60, bgcolor=ft.Colors.WHITE, color=ft.Colors.BLUE_900,
             on_click=lambda e: mainPernoteHistorial.mainPernote_Historial(page))
         ]
     )
@@ -126,7 +128,7 @@ def mainPernote_Sal(page: ft.Page):
         controls=[logo,titulo,registroentrada],
         alignment=ft.MainAxisAlignment.CENTER,
         horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-        spacing=5,
+        spacing=7,
 
     )
 
@@ -134,7 +136,7 @@ def mainPernote_Sal(page: ft.Page):
         controls=[conteiner_reg1,row7,row8],
         alignment=ft.MainAxisAlignment.CENTER,
         horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-        spacing=15
+        spacing=17
     )
 
 
@@ -142,9 +144,7 @@ def mainPernote_Sal(page: ft.Page):
         controls=[columna1, columna2],
         alignment=ft.MainAxisAlignment.CENTER,
         horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-        spacing=20
-        
-        
+        spacing=22   
     )
    
     page.add(columna3)
