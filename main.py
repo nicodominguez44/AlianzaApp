@@ -18,4 +18,5 @@ def main(page: ft.Page):
     else:
         show_mainlogin(None)
 
-ft.app(target=main)
+#ft.app(target=main)
+ft.app(target=main, assets_dir="assets", view=ft.WEB_BROWSER)
