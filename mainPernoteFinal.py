@@ -6,6 +6,7 @@ import asyncio
 # Función principal de la página final
 async def mainPernote_Final_Inicio(page: ft.Page):
     page.clean()
+    page.update()
     page.title= "Registro Exitoso"
 
     page.decoration = ft.BoxDecoration(
