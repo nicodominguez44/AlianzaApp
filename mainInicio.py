@@ -1,7 +1,7 @@
 import flet as ft
 import mainNovedad
 import mainlogin
-from accionBotonPern import boton_pernocte_f
+import accionBotonPern
 import os
 import requests
 import asyncio
@@ -83,7 +83,7 @@ def main_Inicio(page: ft.Page, username: str, user_info: dict):
     page.client_storage.set("user_info", user_info)
 
     app_bar = ft.AppBar(
-        title=ft.Text(f"Bienvenido, {user_info['nombre']}",color=ft.Colors.CYAN_ACCENT, size=14),
+        title=ft.Text(f"Hola {user_info['nombre']}",color=ft.Colors.CYAN_ACCENT, size=14),
         bgcolor= ft.Colors.TRANSPARENT,
         actions=[
             ft.PopupMenuButton(
@@ -114,7 +114,7 @@ def main_Inicio(page: ft.Page, username: str, user_info: dict):
                 text_style=ft.TextStyle(size=20,weight=ft.FontWeight.BOLD,color=ft.Colors.BLUE_900)
             ),
             expand=True, height=70, bgcolor=ft.Colors.WHITE, color=ft.Colors.BLUE_900,
-            on_click= lambda e: boton_pernocte_f(e, page))
+            on_click= lambda e: accionBotonPern.boton_pernocte_f(e, page))
         ]
     )
 
@@ -134,7 +134,7 @@ def main_Inicio(page: ft.Page, username: str, user_info: dict):
     row3= ft.Row(
         [
             ft.ElevatedButton(
-            text="Noticias",
+            text="Web Alianza",
             style= ft.ButtonStyle(
                 text_style=ft.TextStyle(size=20,weight=ft.FontWeight.BOLD,color=ft.Colors.BLUE_900)
             ),
@@ -143,17 +143,17 @@ def main_Inicio(page: ft.Page, username: str, user_info: dict):
         ]
     ) 
 
-    row4= ft.Row(
-        [
-            ft.ElevatedButton(
-            text="Información Útil",
-            style= ft.ButtonStyle(
-                text_style=ft.TextStyle(size=20,weight=ft.FontWeight.BOLD,color=ft.Colors.BLUE_900)
-            ),
-            expand=True, height=70, bgcolor=ft.Colors.WHITE,color=ft.Colors.BLUE_900,
-            on_click=  lambda _: asyncio.run(on_click_informacion_util(page)))
-        ]
-    )
+    #row4= ft.Row(
+        #[
+           # ft.ElevatedButton(
+           # text="Información Útil",
+            #style= ft.ButtonStyle(
+                #text_style=ft.TextStyle(size=20,weight=ft.FontWeight.BOLD,color=ft.Colors.BLUE_900)
+            #),
+            #expand=True, height=70, bgcolor=ft.Colors.WHITE,color=ft.Colors.BLUE_900,
+            #on_click=  lambda _: asyncio.run(on_click_informacion_util(page)))
+        #]
+    #)
 
     columna1= ft.Column(
         controls=[logo,titulo],
@@ -164,7 +164,7 @@ def main_Inicio(page: ft.Page, username: str, user_info: dict):
 
 
     columna2= ft.Column(
-        controls=[row1, row2, row3, row4],
+        controls=[row1, row2, row3],
         alignment=ft.MainAxisAlignment.CENTER,
         horizontal_alignment=ft.CrossAxisAlignment.CENTER,
         spacing=25
