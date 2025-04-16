@@ -520,11 +520,9 @@ def mainPernote_EntFinal(page: ft.Page):
         ],))
     )
 
-    cambiar_f2= accionBotonPern.obtener_cambiar_f2()
-
     async def async_registrar_entrada_cambiar_f2(e, page):
         if await registrar_entrada(page):
-            cambiar_f2(e)
+            accionBotonPern.cambiar_a_f2(page)
 
     row7= ft.Row(
         [
