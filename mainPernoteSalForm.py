@@ -490,11 +490,9 @@ def mainPernote_Final(page: ft.Page):
         ], spacing=5,expand=True,horizontal_alignment=ft.CrossAxisAlignment.CENTER))
     )
 
-    cambiar_f1= accionBotonPern.obtener_cambiar_f1()
-
     async def async_registrar_salida_y_cambiar_f1(e, page):
         if await registrar_salida(page):
-            cambiar_f1(e)
+            accionBotonPern.cambiar_a_f1(page)
 
     row11= ft.Row(
         [
