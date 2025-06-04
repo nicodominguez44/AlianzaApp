@@ -97,13 +97,18 @@ def validar_campos_ent(page):
     page.update()
     return es_valido
 
+def dialog_open(page):
+    page.add(dialog_carga)
+    dialog_carga.open = True
+    page.update()
 
+def dialog_close(page):
+    dialog_carga.open = False
+    page.update()
+    
 async def registrar_entrada(page):
     if validar_campos_ent(page):
-        page.add(dialog_carga)
-        dialog_carga.open = True
-        page.update()
-
+        dialog_open(page)
 
         # Crear el diccionario con los datos
         datos_entrada = {
@@ -133,16 +138,14 @@ async def registrar_entrada(page):
                 # **AQUÍ ES DONDE GUARDAMOS EL ID EN page.client_storage**
                 page.client_storage.set("registro_entrada_id", str(registro_entrada_id))
                 page.update() # Guardar los datos de forma asíncrona
-
+                dialog_close(page)
                 mainPernoteSal.mainPernote_Sal(page) # Pasar el ID
                 page.update()
-                dialog_carga.open = False
-                page.update()
+                
                 return True
             else:
                 print("Error: El backend no devolvió el ID del registro.")
-                dialog_carga.open = False
-                page.update()
+                dialog_close(page)
                 return False
 
         except requests.exceptions.RequestException as e:
