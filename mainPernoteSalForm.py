@@ -56,13 +56,21 @@ dialog_carga = ft.AlertDialog(
     modal=True,bgcolor=ft.Colors.BLACK45
 )
 
+def dialog_open(page):
+    page.add(dialog_carga)
+    dialog_carga.open = True
+    page.update()
+
+
+def dialog_close(page):
+    dialog_carga.open = False
+    page.update()
+
 async def registrar_salida(page):
     
     if validar_campos_sal(page):
         # Mostrar el ProgressRing
-        page.add(dialog_carga)
-        dialog_carga.open = True
-        page.update()
+        dialog_open(page)
 
         # Obtener el ID del registro a eliminar
         id_registro = page.client_storage.get("id_registro_a_eliminar")
@@ -84,18 +92,16 @@ async def registrar_salida(page):
             #limpia los registros globales
             limpiar_registro()
             # Llamar a la siguiente pantalla después de completar la operación
+            dialog_close(page)
             await mainPernoteFinal.mainPernote_Final_Inicio(page)
-            # Cerrar el ProgressRing (remover el AlertDialog)
-            dialog_carga.open = False
-            page.update()
+            
             
             return True
         except requests.exceptions.RequestException as e:
             print(f"Error al eliminar la entrada: {e}")
 
             # Cerrar el ProgressRing (remover el AlertDialog)
-            dialog_carga.open = False
-            page.update()
+            dialog_close(page)
             return False
         
     else:
